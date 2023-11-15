@@ -32,7 +32,6 @@ export class ApiRequester {
 
         this.axios.interceptors.request.use(config => {
             const token = settings.getToken()
-            console.log(token)
             if (token) config.headers.Authorization = "Bearer " + token.accessToken
 
             return config
