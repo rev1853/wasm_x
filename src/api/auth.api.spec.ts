@@ -1,6 +1,5 @@
-import { BASE_URL } from "../../constant"
-import { Baaanggg } from "../baaanggg"
-import { ApiError } from "../error"
+import { BASE_URL } from "../constant"
+import { ApiError, Baaanggg } from "../baaanggg"
 
 
 describe('auth', () => {

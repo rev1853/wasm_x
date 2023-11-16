@@ -1,21 +1,22 @@
 {
   "name": "baaanggg",
-  "version": "1.0.2",
+  "version": "1.0.2-beta1.0.2",
   "description": "The BigBangX API Library",
-  "main": "./dist/index.js",
-  "module": "./dist/index.mjs",
-  "types": "./dist/index.d.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "files": [
-    "dist"
+    "/dist"
   ],
   "scripts": {
-    "build": "rm -rf ./dist && tsc --module commonjs",
-    "test": "npm run build && jasmine"
+    "build": "rm -rf ./dist && tsc",
+    "test": "npm run build && jasmine",
+    "build:create": "npx ctix build --mode create -p ./tsconfig.json --start-from ./src"
   },
-  "author": "Risca Revan Suasmara",
+  "author": "justrevan",
   "license": "ISC",
   "devDependencies": {
     "@types/jasmine": "^5.1.2",
+    "ctix": "^2.3.0",
     "jasmine": "^5.1.0",
     "tsup": "^7.2.0",
     "typescript": "^5.2.2"

@@ -1,7 +1,7 @@
 import Axios, { AxiosInstance } from "axios"
 import { AuthApi } from "./api/auth.api"
 import { TokenResponse } from "./dto/response/token.response"
-import { ApiError } from "./error"
+import { ErrorResponse } from "./dto/response/error.response"
 
 export class Baaanggg {
     token?: TokenResponse
@@ -59,6 +59,12 @@ export class ApiRequester {
     }
 }
 
-interface ApiRequesterSettings {
+export interface ApiRequesterSettings {
     getToken: () => TokenResponse | undefined
+}
+
+export class ApiError extends Error {
+    constructor(private response: ErrorResponse) {
+        super(response.message)
+    }
 }
