@@ -1,31 +1,11 @@
 import Axios, { AxiosInstance } from "axios"
-import { AuthApi } from "./api/auth.api"
-import { TokenResponse } from "./dto/response/token.response"
-import { ErrorResponse } from "./dto/response/error.response"
+import { ApiError } from "./Baaanggg"
+import { TokenResponse } from "./dto/response"
 
-export class Baaanggg {
-    token?: TokenResponse
-    private requester = new ApiRequester(this.baseURL, {
-        getToken: () => this.getToken()
-    })
-
-    auth = new AuthApi(this.requester, token => this.onAuthenticated(token))
-
-    constructor(private baseURL: string) { }
-
-    private onAuthenticated(token: TokenResponse) {
-        this.token = token
-    }
-
-    private getToken() {
-        return this.token
-    }
-}
-
-export class ApiRequester {
+export class APIRequester {
     axios: AxiosInstance
 
-    constructor(baseURL: string, settings: ApiRequesterSettings) {
+    constructor(baseURL: string, settings: APIRequesterSettings) {
         this.axios = Axios.create({
             baseURL: baseURL,
         })
@@ -48,6 +28,26 @@ export class ApiRequester {
         }
     }
 
+    async put<T>(endpoint: string, data?: any): Promise<T> {
+        try {
+            const res = await this.axios.put(endpoint, data)
+            return res.data
+        } catch (e: any) {
+            if ('response' in e && 'data' in e.response) throw new ApiError(e.response.data)
+            throw e
+        }
+    }
+
+    async delete<T>(endpoint: string): Promise<T> {
+        try {
+            const res = await this.axios.delete(endpoint)
+            return res.data
+        } catch (e: any) {
+            if ('response' in e && 'data' in e.response) throw new ApiError(e.response.data)
+            throw e
+        }
+    }
+
     async get<T>(endpoint: string): Promise<T> {
         try {
             const res = await this.axios.get(endpoint)
@@ -59,12 +59,6 @@ export class ApiRequester {
     }
 }
 
-export interface ApiRequesterSettings {
+export interface APIRequesterSettings {
     getToken: () => TokenResponse | undefined
-}
-
-export class ApiError extends Error {
-    constructor(private response: ErrorResponse) {
-        super(response.message)
-    }
 }

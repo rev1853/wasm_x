@@ -1,6 +1,6 @@
 {
   "name": "baaanggg",
-  "version": "1.0.2-beta1.0.2",
+  "version": "1.0.0-dev1.0.0",
   "description": "The BigBangX API Library",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
