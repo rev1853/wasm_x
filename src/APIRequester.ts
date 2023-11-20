@@ -1,47 +1,60 @@
-import Axios, { AxiosError, AxiosInstance } from "axios"
+import axios, { Axios, AxiosError, AxiosInstance } from "axios"
 import { ApiError } from "./Baaanggg"
 import { TokenResponse } from "./dto/response"
 
 export class APIRequester {
-    axios: AxiosInstance
+    private _axios: AxiosInstance
 
     constructor(baseURL: string, private settings: APIRequesterSettings) {
-        this.axios = Axios.create({
+        this._axios = axios.create({
             baseURL: baseURL,
         })
 
-        this.axios.interceptors.request.use(config => {
+        this._axios.interceptors.request.use(config => {
             const token = settings.getToken()
             if (token) config.headers.Authorization = "Bearer " + token.accessToken
 
             return config
         }, error => Promise.reject(error))
 
-        this.axios.interceptors.response.use(
+        this._axios.interceptors.response.use(
             res => res,
             async (error: AxiosError) => {
                 const request = error.config as any
-                const paths = error.config!.url!.split('/')
-                const lastPath = paths[paths.length - 1]
+                const authPaths = [
+                    'auth/sign-in',
+                    'auth/refresh',
+                    'auth/sign-in/admin'
+                ]
 
 
-                if (error.response?.status === 401 && !request._retry && lastPath != "refresh") {
-                    const token = settings.getToken()
-                    if (!token) return Promise.reject(error);
+                if (error.response?.status === 401 && !request._retry && !authPaths.includes(error.config.url)) {
                     request._retry = true;
 
-                    let newToken;
-                    const count = 0;
-                    while (count < 3) {
-                        try {
-                            newToken = await this.refreshToken(token)
-                        } catch { }
-                    }
+                    const token = settings.getToken()
+                    if (token) {
+                        let newToken: TokenResponse = undefined;
+                        for (let i = 0; i < 3; i++) {
+                            try {
+                                newToken = await this.refreshToken(token)
+                                if (newToken) break
+                            } catch { }
+                        }
 
-                    if (newToken) {
-                        settings.onAuthenticated(newToken)
-                        request.headers.Authorization = `Bearer ${newToken.accessToken}`;
-                        return this.axios(request);
+                        if (newToken) {
+                            settings.onAuthenticated(newToken)
+                            return this._axios(request);
+                        } else {
+                            try {
+                                await this.settings.requestAuthCallback()
+                                return await this._axios(request)
+                            } catch { }
+                        }
+                    } else {
+                        try {
+                            await this.settings.requestAuthCallback()
+                            return await this._axios(request)
+                        } catch { }
                     }
                 }
 
@@ -63,7 +76,7 @@ export class APIRequester {
 
     async post<T>(endpoint: string, data?: any): Promise<T> {
         try {
-            const res = await this.axios.post(endpoint, data)
+            const res = await this._axios.post(endpoint, data)
             return res.data
         } catch (e: any) {
             throw this.handleError(e)
@@ -72,7 +85,7 @@ export class APIRequester {
 
     async put<T>(endpoint: string, data?: any): Promise<T> {
         try {
-            const res = await this.axios.put(endpoint, data)
+            const res = await this._axios.put(endpoint, data)
             return res.data
         } catch (e: any) {
             throw this.handleError(e)
@@ -81,7 +94,7 @@ export class APIRequester {
 
     async delete<T>(endpoint: string): Promise<T> {
         try {
-            const res = await this.axios.delete(endpoint)
+            const res = await this._axios.delete(endpoint)
             return res.data
         } catch (e: any) {
             throw this.handleError(e)
@@ -90,7 +103,7 @@ export class APIRequester {
 
     async get<T>(endpoint: string): Promise<T> {
         try {
-            const res = await this.axios.get(endpoint)
+            const res = await this._axios.get(endpoint)
             return res.data
         } catch (e: any) {
             throw this.handleError(e)
@@ -98,16 +111,12 @@ export class APIRequester {
     }
 
     handleError(e: AxiosError) {
-        if (e instanceof AxiosError) {
-            if (e.status === 401) this.settings.onAuthenticationError()
-            if (e.response && e.response.data) throw new ApiError(e.response.data as any)
-        }
-        throw e
+        if (e.response?.data) throw new ApiError(e.response.data as any)
     }
 }
 
 export interface APIRequesterSettings {
     getToken: () => TokenResponse | undefined,
     onAuthenticated: (token: TokenResponse) => void,
-    onAuthenticationError: () => void
+    requestAuthCallback: () => Promise<void>
 }

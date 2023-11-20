@@ -12,19 +12,25 @@ export class Baaanggg {
     token?: TokenResponse
     private requester = new APIRequester(BASE_URL, {
         getToken: () => this.getToken(),
-        onAuthenticated: (token) => this.onAuthenticated(token),
-        onAuthenticationError: () => { this.settings?.onAuthenticationError?.() }
+        onAuthenticated: (token) => this.setToken(token),
+        requestAuthCallback: async () => {
+            if (this.settings.requestAuthCallback) {
+                await this.settings.requestAuthCallback()
+                return Promise.resolve()
+            }
+            return Promise.reject("No callback")
+        }
     })
 
     constructor(private settings?: BaaangggSettings) { }
 
-    auth = new AuthAPI(this.requester, token => this.onAuthenticated(token))
+    auth = new AuthAPI(this.requester, token => this.setToken(token))
     admin = new AdminAPI(this.requester)
     me = new MeAPI(this.requester)
     chain = new ChainAPI(this.requester)
     coin = new CoinAPI(this.requester)
 
-    private onAuthenticated(token: TokenResponse) {
+    setToken(token: TokenResponse) {
         this.token = token
         if (this.settings?.useLocalStorage) localStorage.setItem('token', JSON.stringify(token))
     }
@@ -47,5 +53,5 @@ export class ApiError extends Error {
 
 export class BaaangggSettings {
     useLocalStorage: boolean = false
-    onAuthenticationError?: () => void
+    requestAuthCallback?: () => Promise<void>
 }
