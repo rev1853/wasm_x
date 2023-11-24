@@ -1,7 +1,7 @@
 {
-  "name": "baaanggg",
-  "version": "1.0.0-dev1.1.1",
-  "description": "The BigBangX API Library",
+  "name": "wasmx",
+  "version": "1.0.0-dev0.0.1",
+  "description": "The BigBangX Wasm Library",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
@@ -9,15 +9,13 @@
   ],
   "scripts": {
     "build": "rm -rf ./dist && tsc",
-    "test": "npm run build && jasmine",
     "build:create": "npx ctix build --mode create -p ./tsconfig.json --start-from ./src"
   },
   "author": "justrevan",
   "license": "ISC",
   "devDependencies": {
-    "@types/jasmine": "^5.1.2",
     "ctix": "^2.3.0",
-    "jasmine": "^5.1.0",
+    "@terra-money/feather.js": "^1.0.0-beta.12",
     "tsup": "^7.2.0",
     "typescript": "^5.2.2"
   },
@@ -25,7 +23,5 @@
     "BigBangX",
     "TypeScript"
   ],
-  "dependencies": {
-    "axios": "^1.6.1"
-  }
+  "dependencies": {}
 }
