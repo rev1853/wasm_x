@@ -2,6 +2,7 @@ export interface ChainResponse {
     id: string;
     name: string;
     chainId: string;
+    imageUrl: string;
     lcdUrl: string;
     isClassic: boolean;
     gasAdjustment: number;
