@@ -1,5 +1,6 @@
 import { APIRequester } from "../APIRequester";
 import { AdminCredentialRequest } from "../dto/request/AdminCredentialRequest";
+import { CreateAccountRequest } from "../dto/request/CreateAccountRequest";
 import { CredentialRequest } from "../dto/request/CredentialRequest";
 import { RefreshRequest } from "../dto/request/RefreshRequest";
 import { TokenResponse } from "../dto/response/TokenResponse";
@@ -11,6 +12,11 @@ export class AuthAPI extends BaseAPI {
 
     constructor(requester: APIRequester, private onAuthenticated: (token: TokenResponse) => void) {
         super(requester)
+    }
+
+    async createAccount(body: CreateAccountRequest) {
+        const user = await this.requester.post<UserResponse>(this.getEndpoint('create-account'), body)
+        return user
     }
 
     async signIn(body: CredentialRequest) {

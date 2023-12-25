@@ -1,4 +1,5 @@
 export * from './AdminCredentialRequest';
+export * from './CreateAccountRequest';
 export * from './CreateCoinRequest';
 export * from './CredentialRequest';
 export * from './RefreshRequest';
