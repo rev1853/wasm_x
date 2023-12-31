@@ -1,8 +1,7 @@
-import { Coin, Coins, LCDClient, Msg } from "@terra-money/feather.js";
-import { TxRequest } from "./dto/request/TxRequest";
+import { Coin, Coins, CreateTxOptions, LCDClient, Msg } from "@terra-money/feather.js";
 
 export class WasmQuerier {
-    constructor(private lcd: LCDClient, private chainId: string) { }
+    constructor(private lcd: LCDClient) { }
 
     async query<T>(address: string, command: string, data: object) {
         const query = {};
@@ -11,21 +10,11 @@ export class WasmQuerier {
         return await this.lcd.wasm.contractQuery<T>(address, query)
     }
 
-    async estimateFee(sender: string, txRequest: TxRequest) {
+    async estimateFee(sender: string, txOptions: CreateTxOptions) {
         const accountInfo = await this.lcd.auth.accountInfo(sender)
         const signer = { address: sender, sequenceNumber: accountInfo.getSequenceNumber() }
-        const fee = await this.lcd.tx.estimateFee([signer], txRequest);
+        const fee = await this.lcd.tx.estimateFee([signer], txOptions);
 
         return fee
-    }
-
-
-    countTax(msgs: Msg[]) {
-        const coins = msgs.map(msg => {
-            if ('amount' in msg) return msg.amount instanceof Coin ? new Coins([msg.amount]) : msg.amount
-            return new Coins()
-        }).reduce((prev, curr) => prev.add(curr))
-
-        return coins
     }
 }
