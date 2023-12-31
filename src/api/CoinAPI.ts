@@ -6,8 +6,8 @@ import { BaseAPI } from "./BaseAPI";
 export class CoinAPI extends BaseAPI {
     path: string = 'coin'
 
-    async byChain(chainId: string) {
-        return this.requester.get<CoinResponse[]>(this.getEndpoint('chain', chainId))
+    async all(chainId?: string) {
+        return this.requester.get<CoinResponse[]>(this.getEndpoint(), { chainId })
     }
 
     async byDenom(denom: string) {

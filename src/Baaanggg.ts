@@ -7,6 +7,9 @@ import { MeAPI } from "./api/MeAPI"
 import { ChainAPI } from "./api/ChainAPI"
 import { APIRequester } from "./APIRequester"
 import { CoinAPI } from "./api/CoinAPI"
+import { CollectionAPI } from "./api/CollectionAPI"
+import { UserAPI } from "./api/UserAPI"
+import { ItemAPI } from "./api/ItemAPI"
 
 export class Baaanggg {
     token?: TokenResponse
@@ -29,6 +32,9 @@ export class Baaanggg {
     me = new MeAPI(this.requester)
     chain = new ChainAPI(this.requester)
     coin = new CoinAPI(this.requester)
+    collection = new CollectionAPI(this.requester)
+    user = new UserAPI(this.requester)
+    item = new ItemAPI(this.requester)
 
     setToken(token: TokenResponse) {
         this.token = token

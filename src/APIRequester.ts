@@ -101,9 +101,9 @@ export class APIRequester {
         }
     }
 
-    async get<T>(endpoint: string): Promise<T> {
+    async get<T>(endpoint: string, params?: Record<string, string>): Promise<T> {
         try {
-            const res = await this._axios.get(endpoint)
+            const res = await this._axios.get(endpoint, { params: params })
             return res.data
         } catch (e: any) {
             throw this.handleError(e)
