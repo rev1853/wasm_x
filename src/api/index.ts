@@ -3,4 +3,7 @@ export * from './AuthAPI';
 export * from './BaseAPI';
 export * from './ChainAPI';
 export * from './CoinAPI';
+export * from './CollectionAPI';
+export * from './ItemAPI';
 export * from './MeAPI';
+export * from './UserAPI';

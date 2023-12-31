@@ -5,3 +5,5 @@ export * from './CredentialRequest';
 export * from './RefreshRequest';
 export * from './UpdateChainRequest';
 export * from './UpdateCoinRequest';
+export * from './UpdateCollectionRequest';
+export * from './UpdateUserRequest';
