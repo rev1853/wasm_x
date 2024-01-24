@@ -1,7 +1,11 @@
 import { Coin, Coins, CreateTxOptions, LCDClient, Msg } from "@terra-money/feather.js";
 
 export class WasmQuerier {
-    constructor(private lcd: LCDClient) { }
+    constructor(private lcd: LCDClient, public readonly chainId: string) { }
+
+    getTax(): number {
+        return this.lcd.config[this.chainId]['tax'] || 0
+    }
 
     async query<T>(address: string, command: string, data: object) {
         const query = {};

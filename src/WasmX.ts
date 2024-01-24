@@ -7,8 +7,8 @@ export class WasmX {
     public readonly market: MarketAPI;
 
     constructor(lcd: LCDClient, chainId: string) {
-        this.querier = new WasmQuerier(lcd)
-        this.market = new MarketAPI(this.querier, chainId)
+        this.querier = new WasmQuerier(lcd, chainId)
+        this.market = new MarketAPI(this.querier)
     }
 }
 

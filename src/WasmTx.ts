@@ -13,7 +13,7 @@ export class WasmTx<T> {
     private readonly data: T
     private txOptions?: CreateTxOptions
 
-    constructor(private chainId: string, private querier: WasmQuerier, request: ContractRequest<T>, private readonly parseRequest: RequestParser<T>) {
+    constructor(private querier: WasmQuerier, request: ContractRequest<T>, private readonly parseRequest: RequestParser<T>) {
         this.contract = request.contract
         this.sender = request.sender
         this.memo = request.memo
@@ -50,9 +50,9 @@ export class WasmTx<T> {
 
     async toTxOptions(): Promise<CreateTxOptions> {
         this.txOptions = {
-            chainID: this.chainId,
+            chainID: this.querier.chainId,
             msgs: this.getMsgs(),
-            memo: this.memo,
+            memo: this.memo
         }
 
         const fee = await this.querier.estimateFee(this.sender, this.txOptions)
