@@ -1,4 +1,4 @@
-import { Coin, Msg, MsgExecuteContract } from "@terra-money/feather.js";
+import { MsgExecuteContract } from "@terra-money/feather.js";
 import { CreateCollectionRequest } from "../dto/request/CreateCollectionRequest";
 import { BaseAPI, BaseCommand } from "./BaseAPI";
 import { ContractRequest } from "../dto/request/ContractRequest";
