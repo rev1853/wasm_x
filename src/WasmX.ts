@@ -2,6 +2,8 @@ import { LCDClient } from '@terra-money/feather.js';
 import { WasmQuerier } from './WasmQuerier';
 import { MarketAPI } from './api/MarketAPI';
 import { NftAPI } from './api/NftAPI';
+import { WasmTx } from './WasmTx';
+import { MessageDetail } from './MessageDetail';
 
 export class WasmX {
     private querier: WasmQuerier
@@ -10,7 +12,12 @@ export class WasmX {
 
     constructor(lcd: LCDClient, chainId: string) {
         this.querier = new WasmQuerier(lcd, chainId)
-        this.market = new MarketAPI(this.querier)
-        this.nft = new NftAPI(this.querier)
+        this.market = new MarketAPI()
+        this.nft = new NftAPI()
+    }
+
+    async buildWasmTx(sender: string, messages: MessageDetail[], memo?: string) {
+        const txOptions = await this.querier.estimateFee(sender, messages, memo)
+        return new WasmTx(txOptions, messages, this.querier.getTax())
     }
 }

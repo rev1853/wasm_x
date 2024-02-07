@@ -1,6 +1,5 @@
 export interface ContractRequest<T> {
-    sender: string,
+    sender: string
     contract: string
-    memo?: string
-    data: T,
+    data: T
 }

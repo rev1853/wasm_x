@@ -1,3 +1,4 @@
+export * from './MessageDetail';
 export * from './WasmQuerier';
 export * from './WasmTx';
 export * from './WasmX';

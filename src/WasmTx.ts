@@ -1,24 +1,14 @@
 import { Coin, Coins, CreateTxOptions, Fee, Msg } from "@terra-money/feather.js";
-import { ContractRequest } from "./dto/request/ContractRequest";
 import { WasmQuerier } from "./WasmQuerier";
-import * as lodash from 'lodash'
+import { MessageDetail } from "./MessageDetail";
 
-type MessageDetail = { [key: string]: Msg }
-type RequestParser<T> = (sender: string, contract: string, data: T) => MessageDetail
+export class WasmTx {
 
-export class WasmTx<T> {
-    public readonly contract: string
-    public readonly sender: string
-    public readonly memo?: string
-    private readonly data: T
-    private txOptions?: CreateTxOptions
-
-    constructor(private querier: WasmQuerier, request: ContractRequest<T>, private readonly parseRequest: RequestParser<T>) {
-        this.contract = request.contract
-        this.sender = request.sender
-        this.memo = request.memo
-        this.data = request.data
-    }
+    constructor(
+        public readonly tx: CreateTxOptions,
+        public readonly messages: MessageDetail[],
+        public tax: number = 0,
+    ) { }
 
     getTotalAmount() {
         return this.getMsgs().map(msg => {
@@ -36,28 +26,24 @@ export class WasmTx<T> {
         }).reduce((prev, curr) => prev.add(curr));
     }
 
-    getTaxes(tax: number) {
-        return this.getTotalAmount().mul(tax)
+    getTotalFee() {
+        return this.tx.fee.amount ?? new Coins()
+    }
+
+    getTotalTax() {
+        return this.getTotalAmount().mul(this.tax)
     }
 
     getMsgs(): Msg[] {
-        return lodash.values(this.getMsgDetails())
+        return this.messages.map(e => e.msg)
     }
 
-    getMsgDetails(): MessageDetail {
-        return this.parseRequest(this.sender, this.contract, this.data)
-    }
-
-    async toTxOptions(): Promise<CreateTxOptions> {
-        this.txOptions = {
-            chainID: this.querier.chainId,
-            msgs: this.getMsgs(),
-            memo: this.memo
+    getTxOptions(feeCoins: Coin): CreateTxOptions {
+        const coins = this.getTotalTax().add(feeCoins)
+        const fee = new Fee(this.tx.fee?.gas_limit, coins)
+        return {
+            ...this.tx,
+            fee
         }
-
-        const fee = await this.querier.estimateFee(this.sender, this.txOptions)
-        this.txOptions.fee = fee
-
-        return this.txOptions
     }
 }
