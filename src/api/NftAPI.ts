@@ -1,6 +1,4 @@
 import { MsgExecuteContract } from "@terra-money/feather.js";
-import { WasmQuerier } from "../WasmQuerier";
-import { WasmTx } from "../WasmTx";
 import { ContractRequest } from "../dto/request";
 import { SetLabelsRequest } from "../dto/request/SetLabelsRequest";
 import { MessageDetail } from "../MessageDetail";
