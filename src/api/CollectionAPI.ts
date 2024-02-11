@@ -1,10 +1,21 @@
-import { MsgExecuteContract } from "@terra-money/feather.js";
+import { LCDClient, MsgExecuteContract } from "@terra-money/feather.js";
 import { MessageDetail } from "../MessageDetail";
 import { ContractRequest } from "../dto/request";
 import { SetTxSharesRequest } from "../dto/request/SetTxSharesRequest";
 import { SetMintShares } from "../dto/request/SetMintShares";
+import { BaseAPI, BaseQueryCommand } from "./BaseAPI";
 
-export class CollectionAPI {
+export class CollectionAPI extends BaseAPI<ExecuteCommand, QueryCommand> {
+    protected get executeType(): new () => ExecuteCommand {
+        return ExecuteCommand
+    }
+    protected get queryType(): new (lcd: LCDClient) => QueryCommand {
+        return QueryCommand;
+    }
+
+}
+
+class ExecuteCommand {
     setTxShares({ contract, data, sender }: ContractRequest<SetTxSharesRequest>): MessageDetail {
         return {
             label: "Set transaction shares",
@@ -22,4 +33,7 @@ export class CollectionAPI {
             })
         }
     }
+}
+
+class QueryCommand extends BaseQueryCommand {
 }

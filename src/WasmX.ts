@@ -14,9 +14,9 @@ export class WasmX {
 
     constructor(lcd: LCDClient, chainId: string) {
         this.querier = new WasmQuerier(lcd, chainId)
-        this.market = new MarketAPI()
-        this.nft = new NftAPI()
-        this.collection = new CollectionAPI()
+        this.market = new MarketAPI(lcd)
+        this.nft = new NftAPI(lcd)
+        this.collection = new CollectionAPI(lcd)
     }
 
     async buildWasmTx(sender: string, messages: MessageDetail[], memo?: string) {
