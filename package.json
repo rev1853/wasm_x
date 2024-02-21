@@ -1,6 +1,6 @@
 {
   "name": "wasmx",
-  "version": "1.0.0-dev0.7.0",
+  "version": "1.0.0-dev0.7.1",
   "description": "The BigBangX Wasm Library",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

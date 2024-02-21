@@ -4,6 +4,9 @@ import { ContractRequest } from "../dto/request";
 import { SetTxSharesRequest } from "../dto/request/SetTxSharesRequest";
 import { SetMintShares } from "../dto/request/SetMintShares";
 import { BaseAPI, BaseQueryCommand } from "./BaseAPI";
+import { QueryRequest } from "../dto/request/QueryRequest";
+import { GenerateVoucherRequest } from "../dto/request/GenerateVoucherRequest";
+import { GenerateVoucherResponse } from "../dto/response/GenerateVoucherResponse";
 
 export class CollectionAPI extends BaseAPI<ExecuteCommand, QueryCommand> {
     protected get executeType(): new () => ExecuteCommand {
@@ -36,4 +39,7 @@ class ExecuteCommand {
 }
 
 class QueryCommand extends BaseQueryCommand {
+    async generateVoucher({ contract, data }: QueryRequest<GenerateVoucherRequest>) {
+        return await this.lcd.wasm.contractQuery<GenerateVoucherResponse>(contract, { generate_voucher: data })
+    }
 }

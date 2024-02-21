@@ -4,3 +4,4 @@ export * from './WasmTx';
 export * from './WasmX';
 export * from './api';
 export * from './dto/request';
+export * from './dto/response';
