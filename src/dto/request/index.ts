@@ -3,6 +3,7 @@ export * from './ContractRequest';
 export * from './CreateCollectionRequest';
 export * from './GenerateVoucherRequest';
 export * from './MetadataRequest';
+export * from './MintRequest';
 export * from './QueryRequest';
 export * from './SetLabelsRequest';
 export * from './SetMintShares';
