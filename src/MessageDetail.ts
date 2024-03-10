@@ -1,4 +1,4 @@
-import { MsgExecuteContract } from "@terra-money/feather.js";
+import { MsgExecuteContract } from "@terra-money/terra.js";
 
 export interface MessageDetail {
     label: string,

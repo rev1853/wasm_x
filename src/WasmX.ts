@@ -1,4 +1,4 @@
-import { LCDClient } from '@terra-money/feather.js';
+import { LCDClient } from '@terra-money/terra.js';
 import { WasmQuerier } from './WasmQuerier';
 import { MarketAPI } from './api/MarketAPI';
 import { NftAPI } from './api/NftAPI';
@@ -20,7 +20,8 @@ export class WasmX {
     }
 
     async buildWasmTx(sender: string, messages: MessageDetail[], memo?: string) {
-        const txOptions = await this.querier.estimateFee(sender, messages, memo)
-        return new WasmTx(txOptions, messages, this.querier.getTax())
+        const wasmTx = new WasmTx(this.querier, sender, messages, memo)
+        await wasmTx.init()
+        return wasmTx
     }
 }

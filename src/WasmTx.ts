@@ -1,14 +1,35 @@
-import { Coin, Coins, CreateTxOptions, Fee, Msg } from "@terra-money/feather.js";
+import { Coin, Coins, CreateTxOptions, Fee, Msg } from "@terra-money/terra.js";
 import { WasmQuerier } from "./WasmQuerier";
 import { MessageDetail } from "./MessageDetail";
 
 export class WasmTx {
 
+    private _tx: CreateTxOptions
+    private feeDenom?: string
+
     constructor(
-        public readonly tx: CreateTxOptions,
+        private readonly querier: WasmQuerier,
+        public readonly sender: string,
         public readonly messages: MessageDetail[],
-        public tax: number = 0,
+        public readonly memo?: string,
     ) { }
+
+    get tax() {
+        return this.querier.getTax()
+    }
+
+    public get tx() {
+        return this._tx
+    }
+
+    async init() {
+        this._tx = await this.querier.estimateFee(
+            this.sender,
+            this.messages,
+            this.memo,
+            this.feeDenom ? [this.feeDenom] : undefined
+        )
+    }
 
     getTotalAmount() {
         return this.getMsgs().map(msg => {
@@ -38,12 +59,16 @@ export class WasmTx {
         return this.messages.map(e => e.msg)
     }
 
-    getTxOptions(feeCoins: Coin): CreateTxOptions {
-        const coins = this.getTotalTax().add(feeCoins)
-        const fee = new Fee(this.tx.fee?.gas_limit, coins)
-        return {
+    async getTxOptions(feeDenom: string): Promise<CreateTxOptions> {
+        this.feeDenom = feeDenom
+        await this.init()
+
+        const coins = this.tx.fee.amount.add(this.getTotalTax())
+        const fee = new Fee(this.tx.fee.gas_limit, coins.map(e => new Coin(e.denom, Number(e.amount).toFixed(0))))
+        const tx = {
             ...this.tx,
             fee
         }
+        return tx;
     }
 }

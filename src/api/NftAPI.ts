@@ -1,4 +1,4 @@
-import { LCDClient, MsgExecuteContract } from "@terra-money/feather.js";
+import { LCDClient, MsgExecuteContract } from "@terra-money/terra.js";
 import { ContractRequest } from "../dto/request";
 import { SetLabelsRequest } from "../dto/request/SetLabelsRequest";
 import { MessageDetail } from "../MessageDetail";

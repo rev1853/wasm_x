@@ -1,4 +1,4 @@
-import { Coin, LCDClient, MsgExecuteContract } from "@terra-money/feather.js";
+import { Coin, LCDClient, MsgExecuteContract } from "@terra-money/terra.js";
 import { MessageDetail } from "../MessageDetail";
 import { AssetRequest, ContractRequest } from "../dto/request";
 import { SetTxSharesRequest } from "../dto/request/SetTxSharesRequest";

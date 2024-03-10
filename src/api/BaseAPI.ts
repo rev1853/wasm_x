@@ -1,4 +1,4 @@
-import { LCDClient } from "@terra-money/feather.js";
+import { LCDClient } from "@terra-money/terra.js";
 
 export abstract class BaseAPI<E, Q extends BaseQueryCommand> {
     private _execute: E
